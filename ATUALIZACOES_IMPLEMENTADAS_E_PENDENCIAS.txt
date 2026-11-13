@@ -1,0 +1,59 @@
+POKÉMON JORNADA — ATUALIZAÇÃO PARCIAL
+
+Arquivos de jogo modificados:
+- index_evolucao_corrigido.html
+- battle-effects.js (novo motor de condições e efeitos de batalha)
+
+Alterações implementadas:
+1. Progressão de XP: XP de batalha reduzido para 42% do multiplicador anterior na camada de recompensas; requisito de XP por nível aumentado em 18%, preservando as curvas oficiais por growth rate.
+2. XP por participação: a camada de recompensa registra os Pokémon que efetivamente entram em combate (ação ou troca) e restringe o XP aos participantes vivos. Pokémon que permaneceram no banco não recebem XP.
+3. Ginásios/desafios: cada desafio passa a depender apenas do rank (um desafio adicional por rank); removida a exigência de vitória no desafio anterior. A interface indica o rank necessário e o estado disponível/bloqueado.
+4. Encontros lendários: adicionada verificação independente de 0,001% por encontro selvagem, usando a lista da região atual; míticos e Ultra Beasts são excluídos da seleção lendária.
+
+Preservação:
+- Nenhum arquivo SQL foi alterado.
+- Dados de conta, saves, capturas, megaevolução, movimentos Z e batalhas online não foram intencionalmente modificados.
+- Times e identidades dos líderes não foram alterados.
+
+Validação realizada:
+- Verificação sintática JavaScript (node --check) em todos os scripts inline não vazios: aprovada.
+- Revisão estática das alterações de XP, desbloqueio e seleção regional.
+- Não foi possível executar testes reais de batalha no navegador nesta sessão.
+
+5. Condições de batalha: implementados queimadura, envenenamento, envenenamento grave progressivo, paralisia, sono, congelamento e confusão, com verificações de ação, duração e dano residual.
+6. Efeitos de movimentos: implementado processamento dos efeitos de ailment e stat_changes da PokéAPI, com regras locais de segurança para Thunder Wave, Toxic, Will-O-Wisp, Poison Powder, Sleep Powder, Confuse Ray, Swords Dance, Growl, Tail Whip, Double Team, Light Screen, Reflect e outros movimentos comuns.
+7. Estágios de atributos: implementados os sete estágios (Ataque, Defesa, Ataque Especial, Defesa Especial, Velocidade, Precisão e Evasão), limitados a -6/+6 e aplicados aos cálculos de dano, precisão e ordem de ação.
+8. Proteções: implementadas imunidades de tipo para queimadura, veneno, paralisia, congelamento e movimentos de pó contra Pokémon de Planta.
+9. Telas defensivas: Light Screen, Reflect e Aurora Veil reduzem o dano recebido e têm duração limitada a cinco turnos.
+10. Interface: status, confusão, estágios e telas ativas são exibidos na tela de batalha com mensagens de combate.
+11. Efeitos adicionais: implementados recuo (flinch) quando informado pela PokéAPI e Rest com recuperação total e sono de dois turnos.
+12. Encerramento: os estágios e telas ficam restritos à batalha atual; condições persistentes são removidas pela cura no Centro Pokémon. Foram adicionadas rotinas de limpeza para preservar o fluxo de Mega Evolução, Movimentos Z e desafio especial de Mega Evolução.
+
+Validação adicional:
+- `node --check` no novo battle-effects.js: aprovado.
+- Testes automatizados isolados com mocks: Thunder Wave aplica paralisia; Swords Dance eleva Ataque em +2; Toxic aplica dano residual; Will-O-Wisp respeita imunidade do tipo Fogo; movimentos de pó respeitam imunidade de Pokémon de Planta.
+- Verificação sintática dos 13 scripts inline do HTML: aprovada.
+- A execução completa em navegador real e testes de integração de todas as combinações de movimentos ainda precisam ser feitos; a tentativa de execução headless não terminou dentro do limite da sessão. O motor cobre os efeitos de status e alterações de atributos expostos pela PokéAPI e os movimentos de referência solicitados, mas efeitos especiais fora dessas categorias (por exemplo, clima, armadilhas, campo, drenagem e alguns efeitos exclusivos) ainda precisam de implementação específica. Portanto, esta etapa não deve ser considerada uma cobertura completa de todos os movimentos da franquia.
+
+13. Balanceamento de ginásios e desafios (atualização de dificuldade):
+- Substituídos os níveis mínimos muito baixos dos líderes por uma curva progressiva por rank: 14, 20, 26, 32, 38, 44, 50 e 56; Alola usa quatro patamares próprios: 18, 26, 34 e 42.
+- Adicionado ajuste adaptativo com base na média dos três Pokémon de maior nível da equipe do jogador, somando uma vantagem crescente conforme o rank do desafio.
+- Distribuídos níveis diferentes entre os integrantes da equipe do líder: os primeiros Pokémon ficam abaixo do nível-base e o último fica acima, tornando o Pokémon final do líder mais ameaçador.
+- Mantidas as espécies, a ordem, as identidades e as regiões das equipes oficiais. A exceção de Striaton em Unova continua escolhendo o macaco elemental conforme o inicial.
+- Mantidos os requisitos de desbloqueio por rank e os sistemas próprios de torneios e Liga.
+- A tela de desafios agora exibe a faixa de níveis prevista para cada líder, calculada com base na equipe atual.
+
+Validação desta atualização:
+- `node --check` em `battle-effects.js`: aprovado.
+- Verificação sintática dos 10 blocos JavaScript inline do HTML: aprovada.
+- Testes isolados do cálculo de níveis para treinador iniciante, equipe supernivelada, rank 8 e quarta Grande Prova de Alola: aprovados.
+- Revisão estática confirmou que a preparação dos Pokémon dos líderes usa os níveis individuais calculados e que os times oficiais não foram alterados.
+- Ainda é necessário testar as batalhas completas no navegador para avaliar a dificuldade prática e ajustar números após jogar.
+
+
+AJUSTE DE DIFICULDADE — VERSÃO 4
+- Removida a escala adaptativa baseada nos três Pokémon mais fortes da equipe.
+- Ginásios agora usam exatamente os níveis-base definidos por rank: 14, 20, 26, 32, 38, 44, 50 e 56.
+- Alola mantém sua tabela própria: 18, 26, 34 e 42.
+- Todos os Pokémon da equipe do líder usam o nível correspondente ao desafio.
+- Torneios e Liga não foram alterados por este ajuste.
